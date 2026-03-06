@@ -1,0 +1,19 @@
+# Compiled binaries
+bin/
+
+# Go test cache
+*.test
+*.out
+
+# Editor temp files
+*.swp
+*.swo
+*.tmp
+*~
+\#*\#
+.idea/
+.vscode/
+
+# OS junk
+.DS_Store
+Thumbs.db
