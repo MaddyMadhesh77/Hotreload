@@ -31,8 +31,8 @@ clean:
 	@echo "==> Cleaning..."
 	rm -rf ./bin
 
-## demo: Build hotreload + testserver, then launch the demo.
-demo: build build-server
+## demo: Build hotreload, then launch the demo.
+demo: build
 	@echo ""
 	@echo "==> Starting hotreload demo."
 	@echo "    Edit testserver/main.go and save to see hot reload in action."
@@ -40,8 +40,7 @@ demo: build build-server
 	@echo ""
 	$(BINARY) \
 		--root $(TESTSERVER) \
-		--build "go build -o $(SERVER_BIN) $(TESTSERVER)" \
-		--exec $(SERVER_BIN)
+		--run $(TESTSERVER)
 
 ## help: Print available Makefile targets.
 help:

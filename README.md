@@ -1,9 +1,47 @@
 # hotreload
 
-A lightweight CLI tool that watches a Go project for source-code changes and automatically rebuilds and restarts the server. No frameworks — just `fsnotify` and idiomatic Go.
+A Go-first hot-reload CLI that rebuilds and restarts your server when source files change. It is meant to feel like the Go equivalent of nodemon: one command, save a file, and your app comes back automatically.
 
+## Quick Start
+
+If your Go project has a single `main` package, you can usually just run:
+
+```bash
+hotreload
 ```
-hotreload --root ./myproject --build "go build -o ./bin/server ./cmd/server" --exec "./bin/server"
+
+If your app needs runtime flags, pass them after `--`:
+
+```bash
+hotreload -- --port 8080
+```
+
+If your repository has multiple binaries, point at the one you want:
+
+```bash
+hotreload ./cmd/server
+```
+
+Common layouts:
+
+```bash
+# API server
+hotreload ./cmd/api
+
+# Web server
+hotreload ./cmd/server
+
+# Run with app flags
+hotreload ./cmd/server -- --port 8080
+```
+
+If you want full control, keep using the explicit mode:
+
+```bash
+hotreload \
+  --root . \
+  --build "go build -o ./bin/server ./cmd/server" \
+  --exec "./bin/server"
 ```
 
 ---
@@ -44,27 +82,35 @@ make build          # produces ./bin/hotreload
 
 ## Usage
 
+```bash
+hotreload
+hotreload [-- app-args...]
+hotreload <go-package-or-dir> [-- app-args...]
+hotreload --run <go-package-or-dir> [-- app-args...]
+hotreload --root <dir> --build "<cmd>" --exec "<cmd>"
 ```
-hotreload [flags]
 
 Flags:
+
+```text
   --root      <dir>       Directory to watch (default: .)
-  --build     "<cmd>"     Build command (required)
-  --exec      "<cmd>"     Run command (required)
+  --run       <pkg>       Go package or directory to build and run automatically
+  --build     "<cmd>"     Build command (required in explicit mode)
+  --exec      "<cmd>"     Run command (required in explicit mode)
   --debounce  <duration>  Quiet period before rebuild (default: 200ms)
   -v                      Verbose / debug logging
 ```
 
-### Example
-
-```bash
-hotreload \
-  --root ./myproject \
-  --build "go build -o ./bin/server ./cmd/server" \
-  --exec "./bin/server"
-```
+When no target is provided, hotreload scans the Go workspace for a single runnable `main` package and uses that automatically. If it finds more than one, it asks you to pass the target explicitly.
 
 ---
+
+## Why Use It
+
+- One command for typical Go projects: `hotreload ./cmd/server`
+- No separate build output directory to manage in the common case
+- Works with runtime arguments, so local dev feels natural
+- Keeps the explicit build/exec mode for advanced projects and custom pipelines
 
 ## Quick Demo
 
