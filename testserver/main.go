@@ -15,7 +15,7 @@ import (
 // VERSION is intentionally a plain constant so engineers can edit it to
 // trigger a visible hot-reload: change the string, save, and the server
 // will restart with the new value within seconds.
-const VERSION = "v1.0.0"
+const VERSION = "v1.0.1"
 
 func main() {
 	port := os.Getenv("PORT")
@@ -27,11 +27,17 @@ func main() {
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		slog.Info("request received", "method", r.Method, "path", r.URL.Path)
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		w.Header().Set("Pragma", "no-cache")
+		w.Header().Set("Expires", "0")
 		fmt.Fprintf(w, "testserver %s — %s\n", VERSION, time.Now().Format(time.RFC3339))
 	})
 
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		w.Header().Set("Pragma", "no-cache")
+		w.Header().Set("Expires", "0")
 		fmt.Fprintf(w, `{"status":"ok","version":%q}`, VERSION)
 	})
 
